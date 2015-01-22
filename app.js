@@ -5,12 +5,15 @@ var staffHappiness = [];
 staffHappiness.record = function(item, callback) {
 	turnLedsOff();
 
-	console.log(item.rating);
+	item.temp = currentTemp;
+
+	console.log(item.rating, item.temp);
 	staffHappiness.push(item);
 
 	callback();
 	setTimeout(turnLedsOff, 200);
 }
+var currentTemp;
 
 var greenButton;
 var yellowButton;
@@ -19,6 +22,8 @@ var redButton;
 var redLed;
 var blueLed;
 var greenLed;
+
+var tempSensor;
 
 board.on('ready', function() {
 	greenButton = new five.Button({ pin: 2, invert: true });
@@ -32,6 +37,12 @@ board.on('ready', function() {
 	redLed = new five.Led(9);
 	blueLed = new five.Led(10);
 	greenLed = new five.Led(11);
+
+	tempSensor = new five.Sensor('A0');
+
+	tempSensor.on('data', function() {
+		currentTemp = analogToCelsius(this.value);
+	});
 });
 
 function recordGoodRating() {
@@ -58,3 +69,8 @@ function turnLedsOff() {
 	greenLed.off();
 	blueLed.off();
 }
+
+function analogToCelsius(analogValue) {
+    // For the TMP36 sensor specifically
+    return ((analogValue * 0.004882814) - 0.5) * 100;
+ }
