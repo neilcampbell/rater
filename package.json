@@ -1,0 +1,14 @@
+{
+    "name": "Rater",
+    "description": "Talk rating device",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "johnny-five": "0.8.x"
+    },
+	"devDependencies" : {
+	},
+    "engines": {
+        "node": "0.10.x"
+    }
+}
