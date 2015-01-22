@@ -2,5 +2,6 @@ var five = require('johnny-five');
 var board = five.Board();
 
 board.on('ready', function() {
-	//Code goes in here
+	var led = new five.Led(13);
+	led.strobe();
 });
