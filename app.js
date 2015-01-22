@@ -2,14 +2,23 @@ var five = require('johnny-five');
 var board = five.Board();
 
 var staffHappiness = [];
-staffHappiness.add = function(item) {
+staffHappiness.record = function(item, callback) {
+	turnLedsOff();
+
 	console.log(item.rating);
 	staffHappiness.push(item);
+
+	callback();
+	setTimeout(turnLedsOff, 200);
 }
 
-var greenButton; //good
-var yellowButton; //average
-var redButton; //bad
+var greenButton;
+var yellowButton;
+var redButton;
+
+var redLed;
+var blueLed;
+var greenLed;
 
 board.on('ready', function() {
 	greenButton = new five.Button({ pin: 2, invert: true });
@@ -19,16 +28,33 @@ board.on('ready', function() {
 	greenButton.on('down', recordGoodRating);
 	yellowButton.on('down', recordAverageRating);
 	redButton.on('down', recordBadRating);
+
+	redLed = new five.Led(9);
+	blueLed = new five.Led(10);
+	greenLed = new five.Led(11);
 });
 
 function recordGoodRating() {
-	staffHappiness.add({ rating: 'Good' });
+	staffHappiness.record({ rating: 'Good' }, function() {
+		greenLed.on();
+	});
 }
 
 function recordAverageRating() {
-	staffHappiness.add({ rating: 'Average' });
+	staffHappiness.record({ rating: 'Average' }, function() {
+		greenLed.on();
+		redLed.on();
+	});
 } 
 
 function recordBadRating() {
-	staffHappiness.add({ rating: 'Bad' });
+	staffHappiness.record({ rating: 'Bad' }, function() {
+		redLed.on();
+	});
+}
+
+function turnLedsOff() {
+	redLed.off();
+	greenLed.off();
+	blueLed.off();
 }
